@@ -80,4 +80,8 @@ public class Endpoint {
     public List<Products> getDirectDataFromPostConstruct()throws UserNotFoundException{
         return configs.getAllData();
     }
+    @PostMapping("/MailSender")
+    public void sendEmail(@RequestBody EmailClass email){
+        productLogic.sendEmail(email.getTo(),email.getSubject(),email.getBody());
+    }
 }

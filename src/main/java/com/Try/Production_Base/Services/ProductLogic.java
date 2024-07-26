@@ -29,4 +29,6 @@ public interface ProductLogic {
     Products UpdateWithRequestBody(Products request);
 
     List<ProductRepoGetInterface> GetDataFromJoinQuery();
+
+    void sendEmail(String to, String subject, String body);
 }

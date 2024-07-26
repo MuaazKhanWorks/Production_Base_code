@@ -192,6 +192,7 @@ public class ProductLogicImpl implements ProductLogic {
         return repo.giveQueryData();
     }
 
+    @Override
     public void sendEmail(String to,String subject,String body){
         try {
             SimpleMailMessage mail = new SimpleMailMessage();
