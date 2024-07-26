@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -56,7 +57,7 @@ public class Endpoint {
     @GetMapping("/getSortedData/{field}")
     public APIResponse<List<Products>> SortedData(@PathVariable String field){
         List<Products> products = productLogic.SortedData(field);
-        return new APIResponse<>(products.size(), products);
+        return new APIResponse<>(products.size(), products,new Date(),new Date());
     }
 
     @GetMapping("/getSpecifiData/{offset}/{pagesize}")

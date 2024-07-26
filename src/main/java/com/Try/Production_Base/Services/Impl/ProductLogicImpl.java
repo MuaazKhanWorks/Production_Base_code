@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -33,6 +35,8 @@ public class ProductLogicImpl implements ProductLogic {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     private static final String url = "http://localhost:9091/crackit/v1/management/FindBYName";
     private static final String AUTH_URL = "http://localhost:9091/crackit/v1/auth/authenticate";
@@ -186,6 +190,18 @@ public class ProductLogicImpl implements ProductLogic {
     @Override
     public List<ProductRepoGetInterface> GetDataFromJoinQuery() {
         return repo.giveQueryData();
+    }
+
+    public void sendEmail(String to,String subject,String body){
+        try {
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(to);
+            mail.setSubject(subject);
+            mail.setText(body);
+            javaMailSender.send(mail);
+        }catch (Exception e){
+            log.error("Exception while Send Mail: "+ e);
+        }
     }
 
 }

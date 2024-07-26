@@ -1,7 +1,6 @@
 package com.Try.Production_Base.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class Products extends Auditing{
     private String ratings;
 
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "DD-MM-YYYY")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date expiry;
 
     @OneToOne(cascade = CascadeType.ALL)
