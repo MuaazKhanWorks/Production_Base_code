@@ -1,13 +1,18 @@
 package com.Try.Production_Base.Services.Impl;
 
 import com.Try.Production_Base.DTO.*;
+import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
 import com.Try.Production_Base.Entity.Details;
 import com.Try.Production_Base.Entity.Products;
 import com.Try.Production_Base.Entity.Third;
+import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
+import com.Try.Production_Base.Entity.ThreeClasses.SecondEntity;
+import com.Try.Production_Base.Entity.ThreeClasses.ThirdEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
 import com.Try.Production_Base.Exception.UserNotFoundException;
 import com.Try.Production_Base.Repository.ProductRepo;
 import com.Try.Production_Base.Repository.ProductRepoGetInterface;
+import com.Try.Production_Base.Repository.ThreeClass.FirstRepo;
 import com.Try.Production_Base.Services.ProductLogic;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +42,8 @@ public class ProductLogicImpl implements ProductLogic {
     private RestTemplate restTemplate;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private FirstRepo firstRepo;
 
     private static final String url = "http://localhost:9091/crackit/v1/management/FindBYName";
     private static final String AUTH_URL = "http://localhost:9091/crackit/v1/auth/authenticate";
@@ -203,6 +210,42 @@ public class ProductLogicImpl implements ProductLogic {
         }catch (Exception e){
             log.error("Exception while Send Mail: "+ e);
         }
+    }
+
+    @Override
+    public Object SaveDataInThreeTables(ThreeClassesCombineDTo dTo) {
+
+        FirstEntity firstEntity = new FirstEntity();
+        firstEntity.setF1(dTo.getF1());
+        firstEntity.setF2(dTo.getF2());
+
+        firstEntity.setSecondEntityList(
+                dTo.getSecondEntities().stream().map(secondDTo -> {
+                    SecondEntity secondEntity = new SecondEntity();
+                    secondEntity.setS1(secondDTo.getS1());
+                    secondEntity.setS2(secondDTo.getS2());
+                    secondEntity.setFirst(firstEntity);
+
+                    secondEntity.setThird(
+                            secondDTo.getThirdEntities().stream().map(thirdDTo -> {
+                                ThirdEntity thirdEntity = new ThirdEntity();
+                                thirdEntity.setT1(thirdDTo.getT1());
+                                thirdEntity.setT2(thirdDTo.getT2());
+                                thirdEntity.setSecond(secondEntity);
+                                return thirdEntity;
+                            }).collect(Collectors.toList())
+                    );
+                    return secondEntity;
+                }).collect(Collectors.toList())
+        );
+
+
+        return firstRepo.save(firstEntity);
+    }
+
+    @Override
+    public Object getThreeData() {
+        return firstRepo.getThreeTablesData("03020994429"); //You can take it from RequestBody.
     }
 
 }

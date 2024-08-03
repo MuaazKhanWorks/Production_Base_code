@@ -3,7 +3,9 @@ package com.Try.Production_Base.Services;
 import com.Try.Production_Base.DTO.CombineRequest;
 import com.Try.Production_Base.DTO.ProductRequest;
 import com.Try.Production_Base.DTO.ProductResponse;
+import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
 import com.Try.Production_Base.Entity.Products;
+import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
 import com.Try.Production_Base.Exception.UserNotFoundException;
 import com.Try.Production_Base.Repository.ProductRepoGetInterface;
@@ -31,4 +33,8 @@ public interface ProductLogic {
     List<ProductRepoGetInterface> GetDataFromJoinQuery();
 
     void sendEmail(String to, String subject, String body);
+
+    Object SaveDataInThreeTables(ThreeClassesCombineDTo dTo);
+
+    Object getThreeData();
 }

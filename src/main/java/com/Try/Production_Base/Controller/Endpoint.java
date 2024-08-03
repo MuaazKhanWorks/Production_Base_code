@@ -2,7 +2,9 @@ package com.Try.Production_Base.Controller;
 
 import com.Try.Production_Base.Configuration.Configs;
 import com.Try.Production_Base.DTO.*;
+import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
 import com.Try.Production_Base.Entity.Products;
+import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
 import com.Try.Production_Base.Exception.UserNotFoundException;
 import com.Try.Production_Base.Repository.ProductRepoGetInterface;
@@ -83,5 +85,13 @@ public class Endpoint {
     @PostMapping("/MailSender")
     public void sendEmail(@RequestBody EmailClass email){
         productLogic.sendEmail(email.getTo(),email.getSubject(),email.getBody());
+    }
+    @PostMapping("/SaveDataInThreeTables")
+    public Object SaveDataInThreeTables(@RequestBody ThreeClassesCombineDTo dTo){
+        return productLogic.SaveDataInThreeTables(dTo);
+    }
+    @GetMapping("/getThreeData")
+    public Object getThreeData(){
+        return productLogic.getThreeData();
     }
 }
