@@ -2,7 +2,9 @@ package com.Try.Production_Base.Controller;
 
 import com.Try.Production_Base.Configuration.Configs;
 import com.Try.Production_Base.DTO.*;
+import com.Try.Production_Base.DTO.EmailWithOtpDTO.GenerateOtpRequest;
 import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
+import com.Try.Production_Base.Entity.EmailWithOtp.SendOtp;
 import com.Try.Production_Base.Entity.Products;
 import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
@@ -93,5 +95,9 @@ public class Endpoint {
     @GetMapping("/getThreeData")
     public Object getThreeData(){
         return productLogic.getThreeData();
+    }
+    @PostMapping("/generateOtp")
+    public String generateOtp(@RequestBody GenerateOtpRequest request){
+        return productLogic.generateOtp(request.getTo(),request.getSubject(),request.getBody());
     }
 }

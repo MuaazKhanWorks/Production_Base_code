@@ -4,6 +4,7 @@ import com.Try.Production_Base.DTO.CombineRequest;
 import com.Try.Production_Base.DTO.ProductRequest;
 import com.Try.Production_Base.DTO.ProductResponse;
 import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
+import com.Try.Production_Base.Entity.EmailWithOtp.SendOtp;
 import com.Try.Production_Base.Entity.Products;
 import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
@@ -37,4 +38,6 @@ public interface ProductLogic {
     Object SaveDataInThreeTables(ThreeClassesCombineDTo dTo);
 
     Object getThreeData();
+
+    String generateOtp(String to, String subject, String body);
 }

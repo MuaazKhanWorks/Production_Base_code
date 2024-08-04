@@ -3,6 +3,7 @@ package com.Try.Production_Base.Services.Impl;
 import com.Try.Production_Base.DTO.*;
 import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
 import com.Try.Production_Base.Entity.Details;
+import com.Try.Production_Base.Entity.EmailWithOtp.SendOtp;
 import com.Try.Production_Base.Entity.Products;
 import com.Try.Production_Base.Entity.Third;
 import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
@@ -10,6 +11,7 @@ import com.Try.Production_Base.Entity.ThreeClasses.SecondEntity;
 import com.Try.Production_Base.Entity.ThreeClasses.ThirdEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
 import com.Try.Production_Base.Exception.UserNotFoundException;
+import com.Try.Production_Base.Repository.EmailWithOtp.OtpRepo;
 import com.Try.Production_Base.Repository.ProductRepo;
 import com.Try.Production_Base.Repository.ProductRepoGetInterface;
 import com.Try.Production_Base.Repository.ThreeClass.FirstRepo;
@@ -29,7 +31,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,8 @@ public class ProductLogicImpl implements ProductLogic {
     private JavaMailSender javaMailSender;
     @Autowired
     private FirstRepo firstRepo;
+    @Autowired
+    private OtpRepo otpRepo;
 
     private static final String url = "http://localhost:9091/crackit/v1/management/FindBYName";
     private static final String AUTH_URL = "http://localhost:9091/crackit/v1/auth/authenticate";
@@ -95,7 +99,7 @@ public class ProductLogicImpl implements ProductLogic {
             product.setRatings(request.getRatings());
             product.setExpiry(new Date());
 
-            // 4. Save the updated product back to the repository and return the updated product
+            // 4. Save the updated product back sendTo the repository and return the updated product
             return repo.save(product);
         } else {
            // throw new IllegalArgumentException("Product with id " + id + " not found");
@@ -246,6 +250,31 @@ public class ProductLogicImpl implements ProductLogic {
     @Override
     public Object getThreeData() {
         return firstRepo.getThreeTablesData("03020994429"); //You can take it from RequestBody.
+    }
+
+    @Override
+    public String generateOtp(String to, String subject, String body) {
+        String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+        SendOtp sendOtp = new SendOtp();
+        sendOtp.setSendTo(to);
+        sendOtp.setOtp(otp);
+        sendOtp.setCreatedAt(LocalDateTime.now());
+        sendOtp.setExpiresAt(LocalDateTime.now().plusMinutes(2));
+
+        otpRepo.save(sendOtp);
+
+        sendOtpEmail(to, subject, body + "\nYour OTP code is: " + otp);
+
+        return "Mail Send Successfully";
+    }
+    private void sendOtpEmail(String to, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+
+        javaMailSender.send(message);
     }
 
 }
