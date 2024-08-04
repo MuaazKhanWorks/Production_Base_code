@@ -254,7 +254,7 @@ public class ProductLogicImpl implements ProductLogic {
 
     @Override
     public String generateOtp(String to, String subject, String body) {
-        String otp = String.valueOf(100000 + new Random().nextInt(900000));
+        String otp = String.valueOf(1000 + new Random().nextInt(9000));
 
         SendOtp sendOtp = new SendOtp();
         sendOtp.setSendTo(to);
@@ -268,6 +268,7 @@ public class ProductLogicImpl implements ProductLogic {
 
         return "Mail Send Successfully";
     }
+
     private void sendOtpEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -277,6 +278,13 @@ public class ProductLogicImpl implements ProductLogic {
         javaMailSender.send(message);
     }
 
+    @Override
+    public boolean isOtpValid(String to, String otp) {
+        return otpRepo.findBySendTo(to)
+                .filter(o -> o.getOtp().equals(otp))
+                .filter(o -> o.getExpiresAt().isAfter(LocalDateTime.now()))
+                .isPresent();
+    }
 }
 
 

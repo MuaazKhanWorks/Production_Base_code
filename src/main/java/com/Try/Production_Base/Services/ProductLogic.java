@@ -40,4 +40,6 @@ public interface ProductLogic {
     Object getThreeData();
 
     String generateOtp(String to, String subject, String body);
+
+    boolean isOtpValid(String to, String otp);
 }

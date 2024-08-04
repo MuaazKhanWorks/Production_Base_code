@@ -3,6 +3,7 @@ package com.Try.Production_Base.Controller;
 import com.Try.Production_Base.Configuration.Configs;
 import com.Try.Production_Base.DTO.*;
 import com.Try.Production_Base.DTO.EmailWithOtpDTO.GenerateOtpRequest;
+import com.Try.Production_Base.DTO.EmailWithOtpDTO.VerifyOtpRequest;
 import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
 import com.Try.Production_Base.Entity.EmailWithOtp.SendOtp;
 import com.Try.Production_Base.Entity.Products;
@@ -99,5 +100,10 @@ public class Endpoint {
     @PostMapping("/generateOtp")
     public String generateOtp(@RequestBody GenerateOtpRequest request){
         return productLogic.generateOtp(request.getTo(),request.getSubject(),request.getBody());
+    }
+    @PostMapping("/verify")
+    public String verifyOtp(@RequestBody VerifyOtpRequest request) {
+        boolean isValid = productLogic.isOtpValid(request.getTo(), request.getOtp());
+        return isValid ? "OTP is valid" : "OTP is invalid or expired";
     }
 }
