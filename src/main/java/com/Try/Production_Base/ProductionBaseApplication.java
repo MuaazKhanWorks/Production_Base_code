@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 // @OpenAPIDefinition(info = @Info(title = "Prod-Base-Application",version = "3.2.7",description = "DesXriPtioN"))
 public class ProductionBaseApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		SpringApplication.run(ProductionBaseApplication.class, args);
 	}
-
 }
+
+

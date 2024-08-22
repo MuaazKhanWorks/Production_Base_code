@@ -5,14 +5,15 @@ import com.Try.Production_Base.DTO.*;
 import com.Try.Production_Base.DTO.EmailWithOtpDTO.GenerateOtpRequest;
 import com.Try.Production_Base.DTO.EmailWithOtpDTO.VerifyOtpRequest;
 import com.Try.Production_Base.DTO.ThreeClasses.ThreeClassesCombineDTo;
-import com.Try.Production_Base.Entity.EmailWithOtp.SendOtp;
 import com.Try.Production_Base.Entity.Products;
-import com.Try.Production_Base.Entity.ThreeClasses.FirstEntity;
 import com.Try.Production_Base.Exception.InternalServerError;
 import com.Try.Production_Base.Exception.UserNotFoundException;
+import com.Try.Production_Base.Json.AmazonTranscribeRes;
+import com.Try.Production_Base.Json.Mapinggs;
 import com.Try.Production_Base.Repository.ProductRepoGetInterface;
 import com.Try.Production_Base.Services.ProductLogic;
-import jakarta.validation.ConstraintViolationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,12 +24,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+import static com.Try.Production_Base.Json.HelperUtil.mapper;
+
 @RestController
 @RequiredArgsConstructor
 public class Endpoint {
     private final ProductLogic productLogic;
     private final Configs configs;
-
     @PostMapping("/savingProduct")
     public Products savingProduct(@RequestBody @Valid ProductRequest request ) {
             return productLogic.savingProduct(request);
@@ -105,5 +107,14 @@ public class Endpoint {
     public String verifyOtp(@RequestBody VerifyOtpRequest request) {
         boolean isValid = productLogic.isOtpValid(request.getTo(), request.getOtp());
         return isValid ? "OTP is valid" : "OTP is invalid or expired";
+    }
+    @GetMapping("/getDataFromJson")
+    public String jsonData() throws JsonProcessingException {
+        Mapinggs className = new Mapinggs();
+        AmazonTranscribeRes response = mapper.readValue(className.getJson(), AmazonTranscribeRes.class);
+
+        String transcript = response.getResults().getTranscripts().get(0).getTranscript();
+
+        return transcript;
     }
 }
